@@ -7,8 +7,8 @@ import nectar.plugins.rbac.groups.Group
 import hudson.security.Permission
 
 // Set your Jenkins username and item path
-def username = "user1"
-def itemPath = "folder1/folder2"
+def username = "username"
+def itemPath = "/"
 
 def checkingItems(username, itemPath){
     def item = Jenkins.instance.getItemByFullName(itemPath)
@@ -20,8 +20,6 @@ def checkingItems(username, itemPath){
     def roleDetails = [] // list of [roleName, groupName, path, contextName, permissions]
     def roleNameDetails = []
     def seenRoleKeys = [] as Set  // To avoid duplicates: roleName + context + groupName
-
-    println "Gathering RBAC roles for user '${username}' in item '${item.fullName}' and all inherited scopes..."
 
     def current = item
     while (current != null) {
@@ -213,7 +211,11 @@ def checkRoot(username) {
     }
 }
 
-checkingItems(username, itemPath)
+println "Gathering RBAC roles for user '${username}' in item '${itemPath}' and all inherited scopes..."
+
+if(itemPath!=null && !itemPath.isEmpty() && !itemPath.equals("/")){
+    checkingItems(username, itemPath)
+}
 checkRoot(username)
 
 return
